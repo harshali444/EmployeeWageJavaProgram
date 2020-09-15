@@ -2,31 +2,39 @@ public class EmployeeWage
 {
     public static final int isParttime=1;
     public static final int isFulltime=2;
-    
-	private final String company;
-	private final int EmpRatePerHr;
-    private final int WorkingDays;
-    private final int MaxHrsInMonth;
 
-	public EmployeeWage(String company, int EmpRatePerHr, int WorkingDays, int MaxHrsInMonth)
-	{
-		this.company = company;
-		this.EmpRatePerHr = EmpRatePerHr;
-		this.WorkingDays = WorkingDays;
-		this.MaxHrsInMonth = MaxHrsInMonth;
+	private int numOfCompany = 0;
+	private CompanyEmpWage[] companyEmpWageArray;
+
+	public EmployeeWage() {
+	companyEmpWageArray = new CompanyEmpWage[5];
 	}
 
-	private int ComputeEmpWage() 
+	private void addCompanyEmpWage(String company, int EmpRatePerHr, int WorkingDays, int MaxHrsInMonth) {
+	companyEmpWageArray[numOfCompany] = new CompanyEmpWage(company, EmpRatePerHr, WorkingDays, MaxHrsInMonth);
+
+	numOfCompany++;
+
+	}
+
+	private void ComputeEmpWage() 
 	{
+		for(int i = 0; i < numOfCompany; i++){
+			int totalEmpWage = this.ComputeEmpWage(companyEmpWageArray[i]);
+			System.out.println("Total emp wage for company " + companyEmpWageArray[i]);
+            }
+	}
+
+	private int computeEmpWage(CompanyEmpWage companyEmpWage) {
 
 		int empHrs=0,empWage=0,TotalWage=0,totalWorkingDays=0,totalEmpHrs=0;
 
-		while (totalEmpHrs <= MaxHrsInMonth && 
-										totalWorkingDays < WorkingDays)
+		while (totalEmpHrs <= companyEmpWage.MaxHrsInMonth && 
+										totalWorkingDays < companyEmpWage.WorkingDays);
 		{
 			totalWorkingDays++;
-			double empcheck=Math.floor(Math.random()*10)%3;
-			switch ((int)empcheck) {
+			int empcheck=(int) Math.floor(Math.random()*10)%3;
+			switch (empcheck) {
 
 				case isFulltime:
     	    		empHrs = 8;
@@ -41,17 +49,15 @@ public class EmployeeWage
 			System.out.println("Days:" + totalWorkingDays + " Emp Hr: " + empHrs );
 			
 		}
-			return totalEmpHrs * EmpRatePerHr;
+			return totalEmpHrs * companyEmpWage.EmpRatePerHr;
      }
 
 	public static void main(String[] args)
 	{
-		EmployeeWage dMart = new EmployeeWage("DMart", 20, 20, 100);
-		EmployeeWage Relience = new EmployeeWage("Relience", 30, 25, 80);
-		System.out.println("Total emp Wage for company: " + dMart.company 
-                                        + " is: " + dMart.ComputeEmpWage());
-		System.out.println("Total emp Wage for company: " + Relience.company
-                                        + " is: " + Relience.ComputeEmpWage());
+		EmployeeWage empWageBuilder = new EmployeeWage();
+		empWageBuilder.addCompanyEmpWage("DMart", 20, 2, 10);
+		empWageBuilder.addCompanyEmpWage("Relience", 30, 5, 20);
+		empWageBuilder.ComputeEmpWage();
 	}
 }
 
