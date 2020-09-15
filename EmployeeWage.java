@@ -2,31 +2,49 @@ public class EmployeeWage
 {
     public static final int isParttime=1;
     public static final int isFulltime=2;
-    
-	private final String company;
-	private final int EmpRatePerHr;
-    private final int WorkingDays;
-    private final int MaxHrsInMonth;
 
-	public EmployeeWage(String company, int EmpRatePerHr, int WorkingDays, int MaxHrsInMonth)
-	{
-		this.company = company;
-		this.EmpRatePerHr = EmpRatePerHr;
-		this.WorkingDays = WorkingDays;
-		this.MaxHrsInMonth = MaxHrsInMonth;
+	private int numOfCompany=0;
+	private LinkedList<ComponyEmpWage> companyEmpWageList;
+	private Map<Strimg,CompanyEmpWage> companyToEmpWageMap;
+
+	public EmployeeWage() {
+	companyEmpWageList = new LinkedList<>();
+	companyToEmpWageMap = new HashMap<>();
 	}
 
-	private int ComputeEmpWage() 
+	public void addCompanyEmpWage(String company, int EmpRatePerHr, int WorkingDays, int MaxHrsInMonth) {
+	CompanyEmpWage companyEmpWage = new CompanyEmpWage(company, EmpRatePerHr, WorkingDays, MaxHrsInMonth);
+
+	companyEmpWageList.add(companyEmpWage);
+	companyToEmpWageMap.put(company, companyEmpWage);
+
+
+	}
+
+    public void computeEmpWage() 
 	{
+		for(int i = 0; i < companyEmpWageList.size(); i++){
+			CompanyEmpWage companyEmpWage = companyEmpWageList.get(i);
+			companyEmpWage.setTotalEmpWage(this.computeEmpWage(companyEmpWage));
+			System.out.println(companyEmpWage);
+            }
+	}
 
-		int empHrs=0,empWage=0,TotalWage=0,totalWorkingDays=0,totalEmpHrs=0;
 
-		while (totalEmpHrs <= MaxHrsInMonth && 
-										totalWorkingDays < WorkingDays)
+	public int getTotalWage(String company) {
+		return companyToEmpWageMap.get(company).totalEmpWage;
+	}
+	
+	public int computeEmpWage(CompanyEmpWage companyEmpWage) {
+	
+	int empHrs=0,empWage=0,TotalWage=0,totalWorkingDays=0,totalEmpHrs=0;
+
+		while (totalEmpHrs <= companyEmpWage.MaxHrsInMonth && 
+										totalWorkingDays < companyEmpWage.WorkingDays);
 		{
 			totalWorkingDays++;
-			double empcheck=Math.floor(Math.random()*10)%3;
-			switch ((int)empcheck) {
+			int empcheck=(int) Math.floor(Math.random()*10)%3;
+			switch (empcheck) {
 
 				case isFulltime:
     	    		empHrs = 8;
@@ -41,17 +59,19 @@ public class EmployeeWage
 			System.out.println("Days:" + totalWorkingDays + " Emp Hr: " + empHrs );
 			
 		}
-			return totalEmpHrs * EmpRatePerHr;
+			return totalEmpHrs * companyEmpWage.EmpRatePerHr;
      }
+
+}
 
 	public static void main(String[] args)
 	{
-		EmployeeWage dMart = new EmployeeWage("DMart", 20, 20, 100);
-		EmployeeWage Relience = new EmployeeWage("Relience", 30, 25, 80);
-		System.out.println("Total emp Wage for company: " + dMart.company 
-                                        + " is: " + dMart.ComputeEmpWage());
-		System.out.println("Total emp Wage for company: " + Relience.company
-                                        + " is: " + Relience.ComputeEmpWage());
+		ComputEmpWage empWageBuilder = new empWageBuilder();
+		empWageBuilder.addCompanyEmpWage(company: "DMart", EmpRatePerHr: 20, WorkingDays: 2, MaxHrsInMonth: 10);
+        empWageBuilder.addCompanyEmpWage(company: "Relience", EmpRatePerHr: 30, WorkingDays: 5, MaxHrsInMonth: 20);
+		empWageBuilder.computeEmpWage();
+		System.out.println("Total wage for Dmart:" + empWageBuilder.getTotalWage( company "DMart"));
+        System.out.println("Total wage for Relience:" + empWageBuilder.getTotalWage( company "Relience"));
 	}
 }
 
